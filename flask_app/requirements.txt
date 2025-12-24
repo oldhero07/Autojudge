@@ -1,0 +1,24 @@
+# Flask ML Web App Dependencies
+
+# Web Framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Machine Learning
+scikit-learn==1.3.0
+pandas==2.0.3
+numpy==1.24.3
+
+# Class Imbalance Handling
+imbalanced-learn==0.11.0
+
+# Text Processing (included with scikit-learn but explicit for clarity)
+# TfidfVectorizer is part of scikit-learn
+
+# Development and Testing (optional, can be added later)
+# pytest==7.4.0
+# pytest-flask==1.2.0
+# hypothesis==6.82.0
+
+# Production WSGI Server (optional)
+# gunicorn==21.2.0
