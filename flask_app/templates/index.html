@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Problem Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Programming Problem Classifier</h1>
+            <p>Submit your programming problem details to get automated classification and difficulty scoring.</p>
+        </header>
+        
+        <main>
+            <form id="problem-form" class="problem-form">
+                <div class="form-group">
+                    <label for="description">Problem Description:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe the programming problem..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="input_desc">Input Format:</label>
+                    <textarea id="input_desc" name="input_desc" rows="3" placeholder="Describe the input format..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="output_desc">Output Format:</label>
+                    <textarea id="output_desc" name="output_desc" rows="3" placeholder="Describe the expected output format..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Classify Problem</button>
+            </form>
+            
+            <div id="results" class="results" style="display: none;">
+                <h2>Prediction Results</h2>
+                <div id="prediction-content"></div>
+            </div>
+            
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </main>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
