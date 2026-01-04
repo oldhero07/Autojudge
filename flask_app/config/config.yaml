@@ -1,0 +1,123 @@
+# Enhanced ML Web App Configuration
+# This file contains the main configuration for the enhanced ML web application
+
+app:
+  name: "ML Web App Enhanced"
+  version: "2.0.0"
+  environment: "development"
+  debug: true
+  host: "0.0.0.0"
+  port: 5000
+  secret_key: "dev-secret-key-change-in-production"
+
+# Database configuration
+database:
+  url: "sqlite:///ml_webapp.db"
+  pool_size: 10
+  max_overflow: 20
+  pool_timeout: 30
+
+# Redis configuration
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  timeout: 5
+  connect_timeout: 5
+
+# Machine Learning configuration
+ml:
+  model_path: "models/"
+  enable_auto_selection: true
+  performance_threshold: 0.8
+  max_batch_size: 32
+  prediction_timeout: 30
+  ensemble:
+    voting_strategy: "weighted"
+    enable_adaptive_weights: true
+    weight_update_frequency: 100
+
+# Caching configuration
+cache:
+  local:
+    enabled: true
+    max_size: 1000
+    default_ttl: 3600
+  redis:
+    enabled: false
+    key_prefix: "mlapp:"
+    default_ttl: 3600
+
+# Processing configuration
+processing:
+  max_workers: 4
+  default_mode: "threaded"
+  enable_batching: true
+  queue_size: 1000
+  batch:
+    max_batch_size: 32
+    min_batch_size: 1
+    batch_timeout_ms: 100
+    strategy: "adaptive"
+
+# Monitoring configuration
+monitoring:
+  enabled: true
+  health_check_interval: 30
+  metrics_retention_hours: 24
+  performance_threshold:
+    response_time_ms: 1000
+    error_rate_percent: 5.0
+    cpu_percent: 80.0
+    memory_percent: 85.0
+
+# Alerting configuration
+alerting:
+  enabled: true
+  email:
+    enabled: false
+    smtp_server: "localhost"
+    smtp_port: 587
+    use_tls: true
+    from_address: "alerts@mlapp.com"
+    to_addresses:
+      - "admin@mlapp.com"
+  webhook:
+    enabled: false
+    timeout: 30
+  slack:
+    enabled: false
+    channel: "#alerts"
+    username: "AlertBot"
+
+# Circuit breaker configuration
+circuit_breaker:
+  failure_threshold: 5
+  recovery_timeout: 60
+  half_open_max_calls: 3
+
+# Error recovery configuration
+error_recovery:
+  enable_fallback_models: true
+  enable_graceful_degradation: true
+  enable_cached_responses: true
+  max_retry_attempts: 3
+  retry_delay_seconds: 1
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "json"
+  max_file_size_mb: 100
+  backup_count: 5
+  structured_logging: true
+
+# Security configuration
+security:
+  enable_cors: true
+  cors_origins:
+    - "*"
+  rate_limiting:
+    enabled: false
+    requests_per_minute: 100
+    burst_size: 20

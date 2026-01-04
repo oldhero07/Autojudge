@@ -26,6 +26,7 @@ import re
 import os
 import logging
 import traceback
+import pickle
 from datetime import datetime
 from dataclasses import dataclass
 from typing import Dict, Tuple, Any
@@ -48,6 +49,10 @@ feature_scaler = None
 selector = None  # Feature selector for ultimate model
 model_evaluator = None
 documentation_generator = None
+
+# Model persistence configuration
+MODELS_DIR = 'models'
+MODELS_FILE = os.path.join(MODELS_DIR, 'trained_models.pkl')
 
 class ModelEvaluator:
     """
@@ -868,7 +873,7 @@ def train_models():
         print()
         print("PERFORMANCE VALIDATION:")
         for metric, acceptable in validation_results.items():
-            status = "✓ PASS" if acceptable else "✗ WARN"
+            status = "[PASS]" if acceptable else "[WARN]"
             print(f"  {metric}: {status}")
         print("="*60 + "\n")
         
@@ -892,10 +897,71 @@ def train_models():
         app.logger.info("Models trained successfully with comprehensive evaluation!")
         app.logger.info("Documentation generator initialized and ready!")
         
+        # Save models to disk for faster startup next time
+        save_models()
+        
     except Exception as e:
         app.logger.error(f"Error training models: {str(e)}")
         app.logger.error(traceback.format_exc())
         raise
+
+def save_models():
+    """Save trained models and transformers to disk."""
+    global classifier_pipeline, regressor_pipeline, tfidf_vectorizer, feature_scaler, selector
+    
+    try:
+        # Create models directory if it doesn't exist
+        os.makedirs(MODELS_DIR, exist_ok=True)
+        
+        model_data = {
+            'classifier_pipeline': classifier_pipeline,
+            'regressor_pipeline': regressor_pipeline,
+            'tfidf_vectorizer': tfidf_vectorizer,
+            'feature_scaler': feature_scaler,
+            'selector': selector,
+            'saved_at': datetime.now().isoformat()
+        }
+        
+        with open(MODELS_FILE, 'wb') as f:
+            pickle.dump(model_data, f)
+        
+        app.logger.info(f"Models saved successfully to {MODELS_FILE}")
+        return True
+        
+    except Exception as e:
+        app.logger.warning(f"Failed to save models: {str(e)}")
+        return False
+
+def load_models():
+    """Load trained models and transformers from disk."""
+    global classifier_pipeline, regressor_pipeline, tfidf_vectorizer, feature_scaler, selector
+    
+    try:
+        if not os.path.exists(MODELS_FILE):
+            app.logger.info("No saved models found. Models will be trained.")
+            return False
+        
+        with open(MODELS_FILE, 'rb') as f:
+            model_data = pickle.load(f)
+        
+        classifier_pipeline = model_data.get('classifier_pipeline')
+        regressor_pipeline = model_data.get('regressor_pipeline')
+        tfidf_vectorizer = model_data.get('tfidf_vectorizer')
+        feature_scaler = model_data.get('feature_scaler')
+        selector = model_data.get('selector')
+        saved_at = model_data.get('saved_at', 'unknown')
+        
+        # Validate that all required components are loaded
+        if not all([classifier_pipeline, regressor_pipeline, tfidf_vectorizer, feature_scaler, selector]):
+            app.logger.warning("Incomplete model data loaded. Will retrain models.")
+            return False
+        
+        app.logger.info(f"Models loaded successfully from {MODELS_FILE} (saved at: {saved_at})")
+        return True
+        
+    except Exception as e:
+        app.logger.warning(f"Failed to load models: {str(e)}. Will retrain models.")
+        return False
 
 class PredictionService:
     """Service class for making predictions."""
@@ -972,8 +1038,8 @@ class PredictionService:
         # Apply advanced preprocessing
         processed_text = advanced_text_preprocessing(combined_text)
         
-        # Extract ultimate features (30 features)
-        ultimate_features = extract_ultimate_features(processed_text)
+        # Extract custom features (15 features) - same as training
+        custom_features = extract_custom_features(processed_text)
         
         # Create optimized TF-IDF features
         X_tfidf = tfidf_vectorizer.transform([processed_text])
@@ -982,13 +1048,13 @@ class PredictionService:
         X_tfidf_selected = selector.transform(X_tfidf)
         
         # Scale custom features
-        X_custom = np.array([ultimate_features])
+        X_custom = np.array([custom_features])
         X_custom_scaled = feature_scaler.transform(X_custom)
         
-        # Combine selected TF-IDF and ultimate custom features
+        # Combine selected TF-IDF and custom features
         X_combined = scipy.sparse.hstack([X_tfidf_selected, scipy.sparse.csr_matrix(X_custom_scaled)])
         
-        # Make predictions with ultimate ensemble
+        # Make predictions with ensemble
         predicted_class = classifier_pipeline.predict(X_combined)[0]
         predicted_score = regressor_pipeline.predict(X_combined)[0]
         
@@ -999,27 +1065,29 @@ class PredictionService:
         # Ensure score is clamped between 1 and 10 for the original scale
         predicted_score = max(1.0, min(10.0, predicted_score))
         
-        # Extract key feature insights from ultimate features
-        algorithm_score = ultimate_features[2]  # total_algorithm_score
-        ultra_hard_score = ultimate_features[3]
-        hard_score = ultimate_features[4]
-        math_complexity = ultimate_features[8]
+        # Extract key feature insights from custom features
+        text_len = custom_features[0]
+        word_count = custom_features[1]
+        graph_algorithms = custom_features[2]
+        dynamic_programming = custom_features[3]
+        data_structures = custom_features[4]
         
         return {
             'class': predicted_class,
             'score': round(float(predicted_score), 1),
             'confidence': round(float(confidence), 3),
-            'reliable': confidence > 0.55,  # Adjusted threshold for 59.8% model
+            'reliable': bool(confidence > 0.55),  # Ensure it's a Python bool, not numpy bool
             'features': {
-                'textLength': int(ultimate_features[0]),
-                'wordCount': int(ultimate_features[1]),
-                'algorithmScore': float(algorithm_score),
-                'ultraHardAlgorithms': float(ultra_hard_score),
-                'hardAlgorithms': float(hard_score),
-                'mathComplexity': float(math_complexity),
-                'graphIndicators': int(ultimate_features[16]),
-                'stringIndicators': int(ultimate_features[17]),
-                'optimizationKeywords': int(ultimate_features[21])
+                'textLength': int(text_len),
+                'wordCount': int(word_count),
+                'graphAlgorithms': float(graph_algorithms),
+                'dynamicProgramming': float(dynamic_programming),
+                'dataStructures': float(data_structures),
+                'sortingSearching': float(custom_features[5]),
+                'stringProcessing': float(custom_features[6]),
+                'basicMath': float(custom_features[7]),
+                'advancedMath': float(custom_features[8]),
+                'complexityNotation': float(custom_features[9])
             }
         }
 
@@ -1300,10 +1368,17 @@ def internal_error(error):
     }), 500
 
 def initialize_app():
-    """Initialize the application by training models."""
+    """Initialize the application by loading saved models or training new ones."""
     try:
         app.logger.info("Initializing Flask ML Web Application...")
-        train_models()
+        
+        # Try to load saved models first
+        if load_models():
+            app.logger.info("Using saved models. Skipping training.")
+        else:
+            app.logger.info("Training new models...")
+            train_models()
+        
         app.logger.info("Application initialized successfully!")
     except Exception as e:
         app.logger.error(f"Failed to initialize application: {str(e)}")

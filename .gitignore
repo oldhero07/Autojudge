@@ -1,17 +1,4 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Dependencies
-node_modules
-dist
-dist-ssr
-*.local
+# AutoJudge .gitignore
 
 # Python
 __pycache__/
@@ -36,20 +23,7 @@ wheels/
 *.egg
 MANIFEST
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-
-# Environment
+# Virtual environments
 .env
 .venv
 env/
@@ -58,36 +32,69 @@ ENV/
 env.bak/
 venv.bak/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Flask
+instance/
+.webassets-cache
+flask_app/logs/*.log
+
+# Machine Learning
+*.pkl
+*.joblib
+*.model
+flask_app/models/*.pkl
+flask_app/cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Kiro AI assistant files
-.kiro/
+# Node.js (if using React frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Development and AI-related files
-*_improvements.py
-*breakthrough*.py
-*advanced*.py
-*final*.py
-*improved*.py
-*production_ready*.py
-test_model_*.py
-test_integration.py
-test_property_tests.py
-test_documentation_generator.py
-*IMPROVEMENTS*.md
-*IMPLEMENTATION*.md
-*MIGRATION*.md
-example_problem.txt
-metadata.json
-test_request.json
-create_confusion_matrix_text.py
-comprehensive_dsa_test.py
+# Testing
+.coverage
+.pytest_cache/
+.hypothesis/
+htmlcov/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Docker
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env.local
+.env.production
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Documentation builds
+docs/_build/
+
+# Backup files
+*.bak
+*.backup

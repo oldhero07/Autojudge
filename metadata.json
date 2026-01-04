@@ -1,0 +1,5 @@
+{
+  "name": "autojudge",
+  "description": "Programming Problem Difficulty Predictor",
+  "requestFramePermissions": []
+}
