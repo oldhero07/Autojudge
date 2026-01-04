@@ -36,11 +36,9 @@ venv.bak/
 instance/
 .webassets-cache
 flask_app/logs/*.log
+flask_app/flask_startup.log
 
-# Machine Learning
-*.pkl
-*.joblib
-*.model
+# Trained models (keep structure, ignore large files)
 flask_app/models/*.pkl
 flask_app/cache/
 
@@ -60,7 +58,7 @@ flask_app/cache/
 ehthumbs.db
 Thumbs.db
 
-# Node.js (if using React frontend)
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -74,9 +72,6 @@ htmlcov/
 
 # Jupyter Notebooks
 .ipynb_checkpoints
-
-# Docker
-.dockerignore
 
 # Logs
 *.log

@@ -1,14 +1,14 @@
-# AutoJudge: Programming Problem Difficulty Prediction
+# AutoJudge: Programming Problem Difficulty Prediction System
 
-A machine learning system that automatically classifies programming problems into difficulty categories (Easy, Medium, Hard) and predicts numerical difficulty scores on a 1-10 scale.
+A comprehensive system for automatically classifying programming problems into difficulty categories (Easy, Medium, Hard) and predicting numerical difficulty scores on a 1-10 scale.
 
 ## Overview
 
-AutoJudge analyzes programming problem descriptions and predicts their difficulty using advanced natural language processing and machine learning techniques. The system is designed to assist competitive programming platforms, educational institutions, and coding interview preparation services in automatically categorizing problems.
+AutoJudge analyzes programming problem descriptions using natural language processing and statistical learning techniques to predict their difficulty. The system is designed for competitive programming platforms, educational institutions, and coding assessment services.
 
-## Model Performance
+## Performance Metrics
 
-### Classification Performance
+### Classification Results
 - **Overall Accuracy**: 55.0%
 - **Dataset Size**: 4,112 programming problems
 - **Training/Test Split**: 3,289 / 823 samples
@@ -23,7 +23,7 @@ Hard         25     87    277     389
 Total       130    243    450     823
 ```
 
-#### Per-Class Metrics
+#### Per-Class Performance
 | Class  | Precision | Recall | F1-Score | Support |
 |--------|-----------|--------|----------|---------|
 | Easy   | 0.531     | 0.451  | 0.488    | 153     |
@@ -67,9 +67,9 @@ Total       130    243    450     823
 3. **Complexity Markers**: Sorting/searching, string processing, mathematical content
 4. **Problem Characteristics**: Constraints, optimization keywords, test case patterns
 
-### Model Architecture
+### System Architecture
 
-#### Classification Model
+#### Classification System
 - **Type**: Voting Classifier (Ensemble)
 - **Components**: 
   - Logistic Regression (C=2.0, balanced class weights)
@@ -77,7 +77,7 @@ Total       130    243    450     823
   - Gradient Boosting Classifier (300 estimators, max_depth=12)
 - **Voting Strategy**: Soft voting
 
-#### Regression Model
+#### Regression System
 - **Type**: Random Forest Regressor
 - **Parameters**:
   - n_estimators: 350
@@ -97,7 +97,7 @@ Total       130    243    450     823
 4. **Feature Scaling**: StandardScaler for custom features
 5. **Feature Combination**: Sparse matrix concatenation
 
-## API Endpoints
+## API Documentation
 
 ### Prediction Endpoint
 ```http
@@ -121,8 +121,25 @@ Content-Type: application/json
     "wordCount": 11,
     "dynamicProgramming": 1.0,
     "graphAlgorithms": 0.0,
-    "dataStructures": 0.0
+    "dataStructures": 0.0,
+    "sortingSearching": 0.0,
+    "stringProcessing": 0.0,
+    "basicMath": 0.0,
+    "advancedMath": 0.0,
+    "complexityNotation": 0.0
   }
+}
+```
+
+### Structured Input Format
+```http
+POST /predict/structured
+Content-Type: application/json
+
+{
+  "description": "Find the shortest path in a weighted graph",
+  "input_desc": "Graph represented as adjacency matrix with weights",
+  "output_desc": "Array of distances from source to all vertices"
 }
 ```
 
@@ -131,7 +148,7 @@ Content-Type: application/json
 GET /health
 ```
 
-Returns system status and model loading information.
+Returns system status and component health information.
 
 ## Installation and Setup
 
@@ -141,11 +158,11 @@ Returns system status and model loading information.
 - scikit-learn 1.0+
 - pandas, numpy, scipy
 
-### Installation
+### Local Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/autojudge.git
-cd autojudge
+git clone https://github.com/oldhero07/Autojudge.git
+cd Autojudge
 
 # Install dependencies
 pip install -r flask_app/requirements.txt
@@ -164,6 +181,12 @@ docker build -t autojudge .
 
 # Run the container
 docker run -p 5000:5000 autojudge
+```
+
+### Docker Compose
+```bash
+# Start all services
+docker-compose up -d
 ```
 
 ## Usage Examples
@@ -186,29 +209,54 @@ print(f"Score: {result['score']}/10")
 print(f"Confidence: {result['confidence']:.3f}")
 ```
 
-### Structured Input Format
-For problems with separate input/output descriptions:
+### Batch Processing
 ```python
-response = requests.post('http://localhost:5000/predict/structured', json={
-    'description': 'Find the shortest path in a weighted graph',
-    'input_desc': 'Graph represented as adjacency matrix with weights',
-    'output_desc': 'Array of distances from source to all vertices'
-})
+problems = [
+    "Sort an array of integers",
+    "Find shortest path using Dijkstra's algorithm",
+    "Implement suffix array with linear time complexity"
+]
+
+for problem in problems:
+    response = requests.post('http://localhost:5000/predict', 
+                           json={'description': problem})
+    result = response.json()
+    print(f"{problem[:50]}... -> {result['class']} ({result['score']}/10)")
 ```
 
-## Model Limitations
+## System Limitations
 
-1. **Class Imbalance**: The model shows bias toward predicting "Hard" problems due to dataset imbalance (47.2% hard problems)
-2. **Score Regression**: Limited R² score (0.116) indicates difficulty in precise numerical score prediction
-3. **Domain Specificity**: Trained primarily on competitive programming problems
-4. **Language Dependency**: Optimized for English problem descriptions
+1. **Class Imbalance**: The system shows bias toward predicting "Hard" problems due to dataset imbalance (47.2% hard problems)
+2. **Score Regression**: Limited R² score (0.116) indicates challenges in precise numerical score prediction
+3. **Domain Specificity**: Optimized for competitive programming problems
+4. **Language Dependency**: Designed for English problem descriptions
 
 ## Performance Considerations
 
 - **Inference Time**: ~50ms per prediction
-- **Memory Usage**: ~200MB for loaded models
+- **Memory Usage**: ~200MB for loaded components
 - **Throughput**: ~20 requests/second on standard hardware
-- **Model Size**: ~15MB serialized
+- **Storage**: ~15MB serialized components
+
+## Project Structure
+
+```
+Autojudge/
+├── README.md                    # Project documentation
+├── DEPLOYMENT.md               # Deployment guide
+├── PROJECT_STRUCTURE.md        # Architecture documentation
+├── Dockerfile                  # Container configuration
+├── docker-compose.yml          # Multi-service setup
+├── flask_app/                  # Flask application
+│   ├── app.py                 # Main application (1,393 lines)
+│   ├── requirements.txt       # Python dependencies
+│   ├── models/               # Trained components
+│   ├── templates/            # HTML templates
+│   └── static/              # Static assets
+├── problems_data.jsonl        # Training dataset
+├── scripts/                  # Utility scripts
+└── docs/                    # Additional documentation
+```
 
 ## Contributing
 
@@ -228,10 +276,10 @@ If you use AutoJudge in your research or applications, please cite:
 
 ```bibtex
 @software{autojudge2026,
-  title={AutoJudge: Programming Problem Difficulty Prediction},
-  author={Your Name},
+  title={AutoJudge: Programming Problem Difficulty Prediction System},
+  author={oldhero07},
   year={2026},
-  url={https://github.com/yourusername/autojudge}
+  url={https://github.com/oldhero07/Autojudge}
 }
 ```
 
