@@ -42,9 +42,10 @@ flask_app/flask_startup.log
 flask_app/models/*.pkl
 flask_app/cache/
 
-# IDE
+# IDE and AI Tools (EXCLUDE FROM GITHUB)
 .vscode/
 .idea/
+.kiro/
 *.swp
 *.swo
 *~
