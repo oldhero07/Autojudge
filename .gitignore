@@ -38,11 +38,11 @@ instance/
 flask_app/logs/*.log
 flask_app/flask_startup.log
 
-# Trained models (keep structure, ignore large files)
+# Models and cache
 flask_app/models/*.pkl
 flask_app/cache/
 
-# IDE and AI Tools (EXCLUDE FROM GITHUB)
+# IDE
 .vscode/
 .idea/
 .kiro/
