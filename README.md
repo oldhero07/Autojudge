@@ -2,6 +2,10 @@
 
 A comprehensive system for automatically classifying programming problems into difficulty categories (Easy, Medium, Hard) and predicting numerical difficulty scores on a 1-10 scale.
 
+## 🎥 **Demo Video**
+
+**[Watch Live Demo](https://drive.google.com/file/d/1SkFUdNDqf_I4GOj0pvKPiO_NxA2A7cn7/view?usp=sharing)** - Complete system demonstration showing real-time predictions and technical implementation.
+
 ## Overview
 
 AutoJudge analyzes programming problem descriptions using natural language processing and statistical learning techniques to predict their difficulty. The system is designed for competitive programming platforms, educational institutions, and coding assessment services.
@@ -241,9 +245,22 @@ for problem in problems:
 ## Project Structure
 
 ```
-Autojudge/
-├── README.md                    # Project documentation
+AutoJudge/
+├── README.md                    # Project documentation  
+├── PROJECT_REPORT.md           # Comprehensive technical report
 ├── DEPLOYMENT.md               # Deployment guide
+├── Dockerfile                  # Container configuration
+├── docker-compose.yml          # Multi-service setup
+├── flask_app/                  # Flask application
+│   ├── app.py                 # Main application (1,393 lines)
+│   ├── requirements.txt       # Python dependencies
+│   ├── models/               # Trained ML models
+│   ├── templates/            # HTML templates
+│   └── static/              # Static assets
+├── problems_data.jsonl        # Training dataset (4,112 problems)
+├── test_api.py               # API validation tests
+└── docs/                    # Additional documentation
+```
 ├── PROJECT_STRUCTURE.md        # Architecture documentation
 ├── Dockerfile                  # Container configuration
 ├── docker-compose.yml          # Multi-service setup
